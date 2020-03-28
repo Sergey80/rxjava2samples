@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.exceptions.CompositeException;
-import io.reactivex.internal.operators.single.SingleError;
 import rxjava2.samples.ff.infrastructure.Client;
 import rxjava2.samples.ff.infrastructure.ClientCommunicationException;
 import rxjava2.samples.ff.infrastructure.rx.RxUtils;
@@ -58,7 +57,7 @@ public class RxTest2 {
         return Observable.mergeDelayError(scheduledCalls).map(x -> {
             result.success.add(x);
             return x;
-        }).lastElement().toSingle().flatMap(done -> {
+        }).toList().flatMap(done -> {
             return Single.just(result);
         }).onErrorReturn(ex -> {
             if(ex instanceof io.reactivex.exceptions.CompositeException) {

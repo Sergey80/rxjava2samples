@@ -14,7 +14,7 @@ public class Client {
 
         return Single.fromCallable(() -> {
 
-            System.out.println("Calling " + title + " with " + ids);
+            System.out.println("Calling " + title + " with " + ids + " on " + Thread.currentThread().getName());
 
             Thread.sleep(1000);
 
