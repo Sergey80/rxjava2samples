@@ -101,11 +101,17 @@ public class Step3 {
     public static void main(String[] args) throws InterruptedException {
 
 
-        getData(1)              // try with 1(fail), 3(fail), 4 !
+        final List<Integer> allData = new ArrayList<>();
+
+
+        getData(2)              // try with 1(fail), 3(fail), 4 !
                 .doOnNext(next -> {
                     LogUtil.logWithCurrentTime("next: " + next);
+                    allData.add(next.value);
                 })
                 .doOnComplete(() -> {
+
+                   LogUtil.logWithCurrentTime("all data: " + allData);
                    System.exit(0);
                }).subscribe();
 
