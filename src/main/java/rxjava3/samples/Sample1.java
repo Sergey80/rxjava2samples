@@ -1,8 +1,8 @@
-package rxjava2.samples;
+package rxjava3.samples;
 
-import io.reactivex.Flowable;
-import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +25,7 @@ public class Sample1 {
 
         final int amountOfRequests = 1000;
 
-        final Single<String>  single = singleIsHere(amountOfRequests);
+        final Single<String> single = singleIsHere(amountOfRequests);
 
         final CompletionStage futureHasCome = futureIsHere(single);
 

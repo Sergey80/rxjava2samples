@@ -1,4 +1,4 @@
-package rxjava2.samples.model;
+package rxjava3.samples.model;
 
 import java.time.Duration;
 import java.util.ArrayList;

@@ -1,7 +1,9 @@
-package rxjava2.samples.ff.infrastructure.rx;
+package rxjava3.samples.ff.infrastructure.rx;
 
-import io.reactivex.exceptions.UndeliverableException;
-import io.reactivex.plugins.RxJavaPlugins;
+
+import io.reactivex.rxjava3.exceptions.CompositeException;
+import io.reactivex.rxjava3.exceptions.UndeliverableException;
+import io.reactivex.rxjava3.plugins.RxJavaPlugins;
 
 import java.io.IOException;
 import java.net.SocketException;
@@ -32,7 +34,7 @@ public class RxUtils {
 
                 return;
             }
-            if(e instanceof io.reactivex.exceptions.CompositeException) {
+            if(e instanceof CompositeException) {
                 return;
             }
 

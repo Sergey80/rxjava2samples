@@ -1,9 +1,9 @@
-package rxjava2.samples;
+package rxjava3.samples;
 
-import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
-import rxjava2.samples.model.LoadTestMetricsData;
-import rxjava2.samples.model.Response;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import rxjava3.samples.model.LoadTestMetricsData;
+import rxjava3.samples.model.Response;
 
 import java.time.Duration;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package rxjava2.samples.ff.model;
+package rxjava3.samples.ff.model;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package rxjava2.samples.ff.infrastructure;
+package rxjava3.samples.ff.infrastructure;
 
 import java.util.List;
 

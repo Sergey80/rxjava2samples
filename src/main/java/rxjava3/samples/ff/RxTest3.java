@@ -1,12 +1,12 @@
-package rxjava2.samples.ff;
+package rxjava3.samples.ff;
 
 
 import com.google.common.collect.Lists;
-import io.reactivex.Observable;
-import io.reactivex.Single;
-import rxjava2.samples.ff.infrastructure.Client;
-import rxjava2.samples.ff.infrastructure.rx.RxUtils;
-import rxjava2.samples.ff.model.Result;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
+import rxjava3.samples.ff.infrastructure.Client;
+import rxjava3.samples.ff.infrastructure.rx.RxUtils;
+import rxjava3.samples.ff.model.Result;
 
 import java.util.ArrayList;
 import java.util.List;

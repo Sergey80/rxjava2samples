@@ -1,14 +1,14 @@
-package rxjava2.samples.ff;
+package rxjava3.samples.ff;
 
 
 import com.google.common.collect.Lists;
-import io.reactivex.Observable;
-import io.reactivex.Single;
-import io.reactivex.exceptions.CompositeException;
-import rxjava2.samples.ff.infrastructure.Client;
-import rxjava2.samples.ff.infrastructure.ClientCommunicationException;
-import rxjava2.samples.ff.infrastructure.rx.RxUtils;
-import rxjava2.samples.ff.model.Result;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.exceptions.CompositeException;
+import rxjava3.samples.ff.infrastructure.Client;
+import rxjava3.samples.ff.infrastructure.ClientCommunicationException;
+import rxjava3.samples.ff.infrastructure.rx.RxUtils;
+import rxjava3.samples.ff.model.Result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +60,8 @@ public class RxTest2 {
         }).toList().flatMap(done -> {
             return Single.just(result);
         }).onErrorReturn(ex -> {
-            if(ex instanceof io.reactivex.exceptions.CompositeException) {
-                io.reactivex.exceptions.CompositeException compositeException = (CompositeException) ex;
+            if(ex instanceof CompositeException) {
+                CompositeException compositeException = (CompositeException) ex;
                 final List<Throwable> throwableList = compositeException.getExceptions();
                 throwableList.forEach(er -> {
                     if(er instanceof ClientCommunicationException) {
