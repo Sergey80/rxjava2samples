@@ -1,4 +1,4 @@
-package rxjava3.samples.steps;
+package rxjava3.samples.steps.step2;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.ObservableEmitter;
