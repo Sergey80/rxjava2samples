@@ -8,12 +8,14 @@ import rxjava3.samples.steps.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
   + Service2 renamed to EnhancerService
   + there are many EnhancerServices that meant to Enhance the Service 1 response
   + Service1 to return Single (not Observable)
-  + move main code to getData() function
+  + move main code to getData(ids) function
+  + shows the difference between flatMap() and concatMap() - last preserves ordering
 */
 
 class Response {
@@ -100,11 +102,13 @@ public class Step3 {
 
     public static void main(String[] args) throws InterruptedException {
 
+        long start = System.currentTimeMillis();
+
 
         final List<Integer> allData = new ArrayList<>();
 
 
-        getData(2)              // try with 1(fail), 3(fail), 4 !
+        getData(List.of(1,2,3,4))              // 1 fail, 3 fail
                 .doOnNext(next -> {
                     LogUtil.logWithCurrentTime("next: " + next);
                     allData.add(next.value);
@@ -112,6 +116,9 @@ public class Step3 {
                 .doOnComplete(() -> {
 
                    LogUtil.logWithCurrentTime("all data: " + allData);
+
+                   System.out.println("Time took: " + (System.currentTimeMillis() - start));
+
                    System.exit(0);
                }).subscribe();
 
@@ -119,22 +126,24 @@ public class Step3 {
 
     }
 
-    public static Observable<Response> getData(int input) {
+    public static Observable<Response> getData(final Iterable<Integer> inputIds) {
 
-        var responsesObs1 = service1.call(input).toObservable();
+        final Observable<Response> responsesObs = Observable.fromIterable(inputIds)
+                                                            .flatMap(inputId ->
+//                                                            .concatMap(inputId ->
+                                                                    service1.call(inputId).toObservable());
 
-        final Observable<Response> combinedObs = responsesObs1
+        final Observable<Response> combinedObs = responsesObs
+//                .concatMap(response1 -> {
                 .flatMap(response1 -> {
 
-                    final List<Observable<Response>> responseList = new ArrayList<>();
+                    final List<Observable<Response>> enhancedResponseListObs = enhancerServices.stream()
+                                                                                    .map(enhancerService -> enhancerService.call(response1.value))
+                                                                                    .collect(Collectors.toList());
 
-                    for (final EnhancerService enhancerService : enhancerServices) {
-                        responseList.add( enhancerService.call(response1.value));
-                    }
+                    final Observable<Response> combinedEnhancedResponsesObs = Observable.mergeDelayError(enhancedResponseListObs);  // will not it fail if any of enhancerService fails, to collect as much data as possible
 
-                    final Observable<Response> combinedResults = Observable.mergeDelayError(responseList);  // will not it fail if any of enhancerService fails, to collect as much data as possible
-
-                    return combinedResults
+                    return combinedEnhancedResponsesObs
                             .onErrorReturn((ex) -> {
 
                                 LogUtil.logWithCurrentTime("Error handling for " + response1);
@@ -146,5 +155,8 @@ public class Step3 {
 
         return combinedObs;
     }
+
+    // Output, with concatMap: [1, 200, 201, 400, 401, 3, 400, 401, 800, 801]
+    // Output, with flatMap  : [200, 201, 400, 401, 3, 400, 401, 800, 801, 1]
 
 }
