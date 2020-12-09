@@ -2,6 +2,7 @@ package rxjava3.samples.steps.step3;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.ObservableEmitter;
+import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import rxjava3.samples.steps.LogUtil;
@@ -43,10 +44,16 @@ class Service1 {
         LogUtil.logWithCurrentTime("Calling service 1 ...");
 
         return Single.fromCallable(() -> {
+
+            Thread.sleep(200);
+
             return new Response(arg);
+
         }).doOnSuccess(response -> {
+
             LogUtil.logWithCurrentTime("Service 1 has returned with the Original Response " + response);
-        }).subscribeOn(Schedulers.io());
+
+        }).subscribeOn(Schedulers.io()); // this makes it non-blocking
     }
 
 }
@@ -82,7 +89,8 @@ class EnhancerService {
             }).doOnNext(response -> {
 
                 LogUtil.logWithCurrentTime("Service" + name + " has returned with the response " + response);
-            });
+
+            }).subscribeOn(Schedulers.io()); // this makes it non-blocking
 
         } else {
 
@@ -138,7 +146,9 @@ public class Step3 {
                 .flatMap(response1 -> {
 
                     final List<Observable<Response>> enhancedResponseListObs = enhancerServices.stream()
-                                                                                    .map(enhancerService -> enhancerService.call(response1.value))
+                                                                                    .map(enhancerService -> {
+                                                                                        return enhancerService.call(response1.value);
+                                                                                    })
                                                                                     .collect(Collectors.toList());
 
                     final Observable<Response> combinedEnhancedResponsesObs = Observable.mergeDelayError(enhancedResponseListObs);  // will not it fail if any of enhancerService fails, to collect as much data as possible
@@ -151,12 +161,17 @@ public class Step3 {
                                 response1.warning = ex.getMessage();
                                 return response1; // returns at least service1 result
                             });
-                }).subscribeOn(Schedulers.newThread());
+                });
 
         return combinedObs;
     }
 
     // Output, with concatMap: [1, 200, 201, 400, 401, 3, 400, 401, 800, 801]
     // Output, with flatMap  : [200, 201, 400, 401, 3, 400, 401, 800, 801, 1]
-
+    //
+    // Time took: 2217
+    //  as supposed to be less than 3 seconds:
+    //  4 async calls (each takes 200ms ),
+    //  each makes inner 2 more calls (1 + 1 = 2 sec)
+    // 2 + 200 ms + some handling time =~  2.2 sec.
 }
